@@ -20,6 +20,15 @@ class field_generator:
             field[x][y] = {"content": "ship"}
         return field
 
+    def create_outside(self):
+        return "test"
+
+    def create_center(self):
+        return "test"
+
+    def create_shiplist(self):
+        return "test"
+
 
 test = field_generator()
 display.display_field(test.create_random())
