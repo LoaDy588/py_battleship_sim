@@ -1,13 +1,14 @@
 import random
+import display
 
 
 class field_generator:
     def create_field(self):
         field = []
-        for x in range(10):
+        for y in range(10):
             line = []
-            for y in range(10):
-                line.append({"content": None})
+            for x in range(10):
+                line.append({"content": "water", "hit": False})
             field.append(line)
         return field
 
@@ -17,7 +18,7 @@ class field_generator:
             x = random.randint(0, 9)
             y = random.randint(0, 9)
             print(x, y)
-            field[x][y] = {"content": "ship"}
+            field[x][y]["content"] = "ship"
         return field
 
     def create_outside(self):
