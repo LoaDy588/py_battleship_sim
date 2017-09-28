@@ -1,7 +1,7 @@
 import random
 
 
-def create_field(self):
+def create_field():
     field = []
     for y in range(10):
         line = []
@@ -11,9 +11,9 @@ def create_field(self):
     return field
 
 
-def create_random(self):
-    field = self.create_field()
-    shiplist = self.create_shiplist()
+def create_random():
+    field = create_field()
+    shiplist = create_shiplist()
     for ship in shiplist:
         coords, orientations = find_empty_space(field, ship["length"])
         orientation = orientations[random.randint(0, len(orientations)-1)]
@@ -23,15 +23,15 @@ def create_random(self):
     return field, shiplist
 
 
-def create_outside(self):
+def create_outside():
     return "test"
 
 
-def create_center(self):
+def create_center():
     return "test"
 
 
-def create_shiplist(self):
+def create_shiplist():
     shiplist = []
     shiplist.append({
         "name": "carrier",
