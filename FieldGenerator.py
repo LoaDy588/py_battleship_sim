@@ -1,56 +1,59 @@
 import random
-import Display
 
 
-class FieldGenerator:
-    def create_field(self):
-        field = []
-        for y in range(10):
-            line = []
-            for x in range(10):
-                line.append({"content": "water", "hit": False, "ship": None})
-            field.append(line)
-        return field
+def create_field(self):
+    field = []
+    for y in range(10):
+        line = []
+        for x in range(10):
+            line.append({"content": "water", "hit": False, "ship": None})
+        field.append(line)
+    return field
 
-    def create_random(self):
-        field = self.create_field()
-        shiplist = self.create_shiplist()
-        for ship in shiplist:
-            coords, orientations = find_empty_space(field, ship["length"])
-            ship["coords"] = coords
-            ship["orientation"] = orientations[random.randint(0, len(orientations)-1)]
-            field = place_ship(field, ship)
-        return field, shiplist
 
-    def create_outside(self):
-        return "test"
+def create_random(self):
+    field = self.create_field()
+    shiplist = self.create_shiplist()
+    for ship in shiplist:
+        coords, orientations = find_empty_space(field, ship["length"])
+        orientation = orientations[random.randint(0, len(orientations)-1)]
+        ship["coords"] = coords
+        ship["orientation"] = orientation
+        field = place_ship(field, ship)
+    return field, shiplist
 
-    def create_center(self):
-        return "test"
 
-    def create_shiplist(self):
-        shiplist = []
-        shiplist.append({
-            "name": "carrier",
-            "length": 5
-        })
-        shiplist.append({
+def create_outside(self):
+    return "test"
+
+
+def create_center(self):
+    return "test"
+
+
+def create_shiplist(self):
+    shiplist = []
+    shiplist.append({
+        "name": "carrier",
+        "length": 5
+    })
+    shiplist.append({
             "name": "battleship",
             "length": 4
-        })
-        shiplist.append({
-            "name": "cruiser",
-            "length": 3
-        })
-        shiplist.append({
-            "name": "submarine",
-            "length": 3
-        })
-        shiplist.append({
-            "name": "destroyer",
-            "length": 2
-        })
-        return shiplist
+    })
+    shiplist.append({
+        "name": "cruiser",
+        "length": 3
+    })
+    shiplist.append({
+        "name": "submarine",
+        "length": 3
+    })
+    shiplist.append({
+        "name": "destroyer",
+        "length": 2
+    })
+    return shiplist
 
 
 def find_empty_space(field, length):
@@ -130,10 +133,3 @@ def place_ship(field, ship):
             field[coords[0]][coords[1]+i]["content"] = "ship"
             field[coords[0]][coords[1]+i]["ship"] = ship["name"]
     return field
-
-
-test = FieldGenerator()
-field, shiplist = test.create_random()
-Display.display_field(field)
-for ship in shiplist:
-    print(ship)
