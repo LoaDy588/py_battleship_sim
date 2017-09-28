@@ -4,3 +4,6 @@ class player:
 
     def has_lost(self):
         return "test"
+
+    def turn():
+        return "test"

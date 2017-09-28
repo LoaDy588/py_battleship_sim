@@ -14,12 +14,9 @@ class field_generator:
 
     def create_random(self):
         field = self.create_field()
-        for i in range(10):
-            x = random.randint(0, 9)
-            y = random.randint(0, 9)
-            print(x, y)
-            field[x][y]["content"] = "ship"
-        return field
+        shiplist = self.create_shiplist()
+        
+        return field, shiplist
 
     def create_outside(self):
         return "test"
@@ -28,8 +25,31 @@ class field_generator:
         return "test"
 
     def create_shiplist(self):
-        return "test"
+        shiplist = []
+        shiplist.append({
+            "name": "carrier",
+            "length": 5
+        })
+        shiplist.append({
+            "name": "battleship",
+            "length": 4
+        })
+        shiplist.append({
+            "name": "cruiser",
+            "length": 3
+        })
+        shiplist.append({
+            "name": "submarine",
+            "length": 3
+        })
+        shiplist.append({
+            "name": "destroyer",
+            "length": 2
+        })
+        return shiplist
 
 
 test = field_generator()
-display.display_field(test.create_random())
+field, shiplist = test.create_random()
+display.display_field(field)
+print(shiplist)
