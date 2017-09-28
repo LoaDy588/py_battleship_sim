@@ -1,9 +1,6 @@
-class player:
+class Player:
     def hit(self, coords):
         return "test"
 
     def has_lost(self):
-        return "test"
-
-    def turn():
         return "test"
