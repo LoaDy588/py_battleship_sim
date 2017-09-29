@@ -17,4 +17,4 @@ def print_point(data):
         if not data["hit"]:
             print(" ", end=" ")
         if data["hit"]:
-            print("\u25ab", end=" ")
+            print("\u00b7", end=" ")
