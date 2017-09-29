@@ -6,7 +6,7 @@ def create_field():
     for y in range(10):
         line = []
         for x in range(10):
-            line.append({"content": "water", "hit": False, "ship": None})
+            line.append({"content": "water", "hit": False, "shipID": None})
         field.append(line)
     return field
 
@@ -35,23 +35,28 @@ def create_shiplist():
     shiplist = []
     shiplist.append({
         "name": "carrier",
-        "length": 5
+        "length": 5,
+        "id": 0
     })
     shiplist.append({
             "name": "battleship",
-            "length": 4
+            "length": 4,
+            "id": 1
     })
     shiplist.append({
         "name": "cruiser",
-        "length": 3
+        "length": 3,
+        "id": 2
     })
     shiplist.append({
         "name": "submarine",
-        "length": 3
+        "length": 3,
+        "id": 3
     })
     shiplist.append({
         "name": "destroyer",
-        "length": 2
+        "length": 2,
+        "id": 4
     })
     return shiplist
 
@@ -122,14 +127,14 @@ def place_ship(field, ship):
     for i in range(length):
         if ship["orientation"] == 0:
             field[coords[0]-i][coords[1]]["content"] = "ship"
-            field[coords[0]-i][coords[1]]["ship"] = ship["name"]
+            field[coords[0]-i][coords[1]]["shipID"] = ship["id"]
         elif ship["orientation"] == 1:
             field[coords[0]][coords[1]-i]["content"] = "ship"
-            field[coords[0]][coords[1]-i]["ship"] = ship["name"]
+            field[coords[0]][coords[1]-i]["shipID"] = ship["id"]
         if ship["orientation"] == 2:
             field[coords[0]+i][coords[1]]["content"] = "ship"
-            field[coords[0]+i][coords[1]]["ship"] = ship["name"]
+            field[coords[0]+i][coords[1]]["shipID"] = ship["id"]
         elif ship["orientation"] == 3:
             field[coords[0]][coords[1]+i]["content"] = "ship"
-            field[coords[0]][coords[1]+i]["ship"] = ship["name"]
+            field[coords[0]][coords[1]+i]["shipID"] = ship["id"]
     return field
