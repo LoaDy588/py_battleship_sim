@@ -39,9 +39,9 @@ def create_shiplist():
         "id": 0
     })
     shiplist.append({
-            "name": "battleship",
-            "length": 4,
-            "id": 1
+        "name": "battleship",
+        "length": 4,
+        "id": 1
     })
     shiplist.append({
         "name": "cruiser",
