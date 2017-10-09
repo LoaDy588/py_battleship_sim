@@ -1,4 +1,4 @@
-import player
+from . import player
 import random
 
 
@@ -10,7 +10,7 @@ class Random_AI(player.Player):
             for y in range(10):
                 self.hit_list.append([x, y])
 
-    def turn(self):
+    def turn(self, opponent):
         coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
         self.hit_list.remove(coords)
-        return coords
+        opponent.hit(coords)

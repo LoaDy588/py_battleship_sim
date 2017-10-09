@@ -1,9 +1,9 @@
-import fieldgenerator
+from . import field_utils
 
 
 class Player:
     def __init__(self):
-        self.field, self.shiplist = fieldgenerator.create_random()
+        self.field, self.shiplist = field_utils.create_random()
 
     def hit(self, coords):
         x = coords[0]
