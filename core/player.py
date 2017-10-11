@@ -12,9 +12,12 @@ class Player:
         if self.field[x][y]["content"] == "ship":
             ship_id = self.field[x][y]["shipID"]
             ship_sunk = check_ship(self.field, self.shiplist[ship_id])
-            return True, ship_sunk
+            length = 0
+            if ship_sunk:
+                length = self.shiplist[ship_id]["length"]
+            return True, ship_sunk, length
         else:
-            return False, False
+            return False, False, 0
 
     def has_lost(self):
         ship_status = []
