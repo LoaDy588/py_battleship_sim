@@ -20,9 +20,14 @@ class Hunt_AI(player.Player):
 
     def turn(self, enemy):
         if self.mode == "hunt":
-            coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
+            if len(self.hit_list) > 1:
+                coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
+            elif len(self.hit_list) == 1:
+                coords = self.hit_list[0]
+            else:
+                self.hit_list = regen_hit_list(self.enemy_field)
+                coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
             self.enemy_field[coords[0]][coords[1]]["hit"] = True
-            print(coords)
             ship_hit, ship_sunk, ship_length = enemy.hit(coords)
             self.hit_list.remove(coords)
             if ship_hit:
@@ -32,12 +37,16 @@ class Hunt_AI(player.Player):
 
         elif self.mode == "target":
             self.create_targets()
-            if not len(self.target_list) == 1:
+            if len(self.target_list) > 1:
                 coords = self.target_list[random.randint(0, len(self.target_list)-1)]
+            elif len(self.target_list) == 0:
+                self.mode = "hunt"
+                self.target_list = []
+                self.previous_hits = [None]
+                return
             else:
                 coords = self.target_list[0]
             self.enemy_field[coords[0]][coords[1]]["hit"] = True
-            print(coords)
             ship_hit, ship_sunk, ship_length = enemy.hit(coords)
             if coords in self.hit_list:
                 self.hit_list.remove(coords)
@@ -55,77 +64,46 @@ class Hunt_AI(player.Player):
     def create_targets(self):
         targets = []
         for hit in self.previous_hits:
-            neighbors = get_neighbors(hit)
+            neighbors = field_utils.get_neighbors(hit)
             for neighbor in neighbors:
                 targets.append(neighbor)
+        targets_clean1 = []
         for target in targets:
+            if target not in targets_clean1:
+                targets_clean1.append(target)
+        for target in targets_clean1:
             if target in self.previous_hits:
-                targets.remove(target)
-        for target in targets:
-            if self.enemy_field[target[0]][target[1]]["hit"]:
-                targets.remove(target)
-        targets_clean = []
-        for target in targets:
-            if target not in targets_clean:
-                targets_clean.append(target)
-        self.target_list = targets_clean
+                targets_clean1.remove(target)
+        targets_clean2 = []
+        for target in targets_clean1:
+            if not self.enemy_field[target[0]][target[1]]["hit"]:
+                targets_clean2.append(target)
+        self.target_list = targets_clean2
 
     def cleanup_ship(self, length):
         last = self.previous_hits[-1]
-        direction = 0
+        direction = (0, 0)
         if [last[0]-length+1, last[1]] in self.previous_hits:
-            direction = 0
+            direction = (-1, 0)
         elif [last[0]+length-1, last[1]] in self.previous_hits:
-            direction = 2
+            direction = (1, 0)
         elif [last[0], last[1]-length+1] in self.previous_hits:
-            direction = 1
+            direction = (0, -1)
         elif [last[0], last[1]+length-1] in self.previous_hits:
-            direction = 3
+            direction = (0, 1)
         for i in range(length):
-            if direction == 0:
-                removal = [last[0]-i, last[1]]
-                if removal in self.previous_hits:
-                    self.previous_hits.remove(removal)
-            elif direction == 1:
-                removal = [last[0], last[1]-i]
-                if removal in self.previous_hits:
-                    self.previous_hits.remove(removal)
-            elif direction == 2:
-                removal = [last[0]+i, last[1]]
-                if removal in self.previous_hits:
-                    self.previous_hits.remove(removal)
-            elif direction == 3:
-                removal = [last[0], last[1]+i]
-                if removal in self.previous_hits:
-                    self.previous_hits.remove(removal)
+            removal = [last[0]+i*direction[0], last[1]+i*direction[1]]
+            if removal in self.previous_hits:
+                self.previous_hits.remove(removal)
 
 
-def get_neighbors(coords):
-    neighbors = []
-    directions = [0, 1, 2, 3]
-    if coords[0]+1 > 9:
-        directions.remove(2)
-    if coords[0]-1 < 0:
-        directions.remove(0)
-    if coords[1]+1 > 9:
-        directions.remove(3)
-    if coords[1]-1 < 0:
-        directions.remove(1)
-    for i in directions:
-        neighbor = []
-        if i == 0:
-            x = coords[0] - 1
-            y = coords[1]
-        elif i == 1:
-            x = coords[0]
-            y = coords[1] - 1
-        elif i == 2:
-            x = coords[0] + 1
-            y = coords[1]
-        elif i == 3:
-            x = coords[0]
-            y = coords[1] + 1
-        neighbor.append(x)
-        neighbor.append(y)
-        neighbors.append(neighbor)
-    return neighbors
+def regen_hit_list(field):
+    hit_list = []
+    for x in range(10):
+        for y in range(10):
+            if (x + y) % 2 == 1:
+                hit_list.append([x, y])
+    for hit in hit_list:
+        if field[hit[0]][hit[1]]["hit"]:
+            hit_list.remove(hit)
+    return hit_list

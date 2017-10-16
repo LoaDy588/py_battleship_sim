@@ -27,8 +27,12 @@ def create_outside():
     return "test"
 
 
-def create_center():
+def create_cluster():
     return "test"
+
+
+def create_human_like():
+    return "foobar"
 
 
 def create_shiplist():
@@ -77,64 +81,50 @@ def find_empty_space(field, length):
 
 
 def find_possible_orientations(field, coords, length):
-    orientations = []
-    for i in range(4):
-        for j in range(length):
-            if i == 0:
-                if coords[0]-j > 9 or coords[0]-j < 0:
-                    break
-                else:
-                    pass
-                if field[coords[0]-j][coords[1]]["content"] == "water":
-                    pass
-                else:
-                    break
-            elif i == 1:
-                if coords[1]-j > 9 or coords[1]-j < 0:
-                    break
-                else:
-                    pass
-                if field[coords[0]][coords[1]-j]["content"] == "water":
-                    pass
-                else:
-                    break
-            elif i == 2:
-                if coords[0]+j > 9 or coords[0]+j < 0:
-                    break
-                else:
-                    pass
-                if field[coords[0]+j][coords[1]]["content"] == "water":
-                    pass
-                else:
-                    break
-            elif i == 3:
-                if coords[1]+j > 9 or coords[1]+j < 0:
-                    break
-                else:
-                    pass
-                if field[coords[0]][coords[1]+j]["content"] == "water":
-                    pass
-                else:
-                    break
-            if j == length-1:
-                orientations.append(i)
-    return orientations
+    orientations = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+    possible = []
+    for vctr in orientations:
+        for i in range(length):
+            position = []
+            position.append(coords[0]+i*vctr[0])
+            position.append(coords[1]+i*vctr[1])
+            if position[0] > 9 or position[1] > 9:
+                break
+            if position[0] < 0 or position[1] < 0:
+                break
+            if not field[position[0]][position[1]]["content"] == "water":
+                break
+            if i == length-1:
+                possible.append(vctr)
+    return possible
 
 
 def place_ship(field, ship):
     length = ship["length"]
     coords = ship["coords"]
+    orientation = ship["orientation"]
     for i in range(length):
-        if ship["orientation"] == 0:
-            field[coords[0]-i][coords[1]]["content"] = "ship"
-            field[coords[0]-i][coords[1]]["shipID"] = ship["id"]
-        elif ship["orientation"] == 1:
-            field[coords[0]][coords[1]-i]["content"] = "ship"
-            field[coords[0]][coords[1]-i]["shipID"] = ship["id"]
-        if ship["orientation"] == 2:
-            field[coords[0]+i][coords[1]]["content"] = "ship"
-            field[coords[0]+i][coords[1]]["shipID"] = ship["id"]
-        elif ship["orientation"] == 3:
-            field[coords[0]][coords[1]+i]["content"] = "ship"
-            field[coords[0]][coords[1]+i]["shipID"] = ship["id"]
+        position = []
+        position.append(coords[0]+i*orientation[0])
+        position.append(coords[1]+i*orientation[1])
+        field[position[0]][position[1]]["content"] = "ship"
+        field[position[0]][position[1]]["shipID"] = ship["id"]
     return field
+
+
+def get_neighbors(coords):
+    neighbors = []
+    directions = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+    for vector in directions:
+        if coords[0]+vector[0] > 9 or coords[1]+vector[1] > 9:
+            directions.remove(vector)
+        elif coords[0]+vector[0] < 0 or coords[1]+vector[1] < 0:
+            directions.remove(vector)
+    for vector in directions:
+        neighbor = []
+        x = coords[0] + vector[0]
+        y = coords[1] + vector[1]
+        neighbor.append(x)
+        neighbor.append(y)
+        neighbors.append(neighbor)
+    return neighbors

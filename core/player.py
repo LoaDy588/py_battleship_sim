@@ -41,14 +41,7 @@ def check_ship(field, ship):
     orientation = ship["orientation"]
     hit_list = []
     for i in range(ship["length"]):
-        if orientation == 0:
-            hit_list.append(field[x-i][y]["hit"])
-        elif orientation == 1:
-            hit_list.append(field[x][y-i]["hit"])
-        elif orientation == 2:
-            hit_list.append(field[x+i][y]["hit"])
-        elif orientation == 3:
-            hit_list.append(field[x][y+i]["hit"])
+        hit_list.append(field[x+i*orientation[0]][y+i*orientation[1]]["hit"])
     if sum(hit_list) == ship["length"]:
         return True
     else:
