@@ -1,41 +1,79 @@
+"""
+Contains utilites for creating and working with battleship game fields.
+
+field, ship, shiplist returns/arguments are always standard format.
+For standard formats, check FORMATS.md.
+
+
+GENERATION METHODS:
+create_field - creates empty field
+create_random - creates field randomly filled with ships
+create_outside - creates field with ships near the borders(PLANNED)
+create_cluster - creates field with randomly placed cluster of ships(PLANNED)
+create_human_like - create field with randomly placed ships with gaps
+create_shiplist - creates shiplist
+
+UTILITY METHODS:
+find_empty_space - finds empty space in specified field
+find_possible_orientations - finds possible orientation
+                             for a ship of specified length and origin
+place_ship - places specified ship in the specified field
+get_neighbors - returns list of neighbors of specified fied coord
+
+Oldřich Pecák(LoaDy588), 2017
+"""
 import random
 
 
 def create_field():
+    """Return empty field."""
     field = []
     for y in range(10):
         line = []
         for x in range(10):
+            # add dictionary with default values
             line.append({"content": "water", "hit": False, "shipID": None})
         field.append(line)
     return field
 
 
 def create_random():
+    """Return randomly filled field and shiplist."""
+    # create empty field and basic shiplist
     field = create_field()
     shiplist = create_shiplist()
+
+    # place every ship from shiplist in the field
     for ship in shiplist:
         coords, orientations = find_empty_space(field, ship["length"])
+        # pick random from possible orientations of ship
         orientation = orientations[random.randint(0, len(orientations)-1)]
+
+        # write position values to the ship dictionary
         ship["coords"] = coords
         ship["orientation"] = orientation
+
         field = place_ship(field, ship)
     return field, shiplist
 
 
 def create_outside():
+    """Return field with ships near border and it's shiplist"""
     return "test"
 
 
 def create_cluster():
+    """Create and return field with ships in cluster and shiplist"""
     return "test"
 
 
 def create_human_like():
+    """Create and return randomly filled(with gaps) field and shiplist"""
     return "foobar"
 
 
 def create_shiplist():
+    """Returns shiplist."""
     shiplist = []
     shiplist.append({
         "name": "carrier",
@@ -66,14 +104,30 @@ def create_shiplist():
 
 
 def find_empty_space(field, length):
+    """
+    Finds empty space for a ship.
+
+    ARGUMENTS:
+    field - field in which to find space
+    length - length of the ship we want to find space for in format int(length)
+
+    RETURNS(tuple):
+    coords - coords of the empty space(origin point of ship) in format [x, y]
+    orientations - list of possible orientation vectors
+    """
     while True:
+        # create random coords
         x = random.randint(0, 9)
         y = random.randint(0, 9)
+
+        # if space occupied, skip cycle and start again
         if field[x][y]["content"] == "ship":
             continue
         else:
             coords = [x, y]
             orientations = find_possible_orientations(field, coords, length)
+
+            # if no possible orientations, skip cycle and star again
             if len(orientations) == 0:
                 continue
             else:
@@ -81,25 +135,56 @@ def find_empty_space(field, length):
 
 
 def find_possible_orientations(field, coords, length):
+    """
+    Find possible orientations for a ship.
+
+    ARGUMENTS:
+    field - field in which to find orientations
+    coords - origin coords of ship in format  [x, y]
+    length - length of ship in format int(length)
+
+    RETURNS:
+    list of possible orientations(each orientation characterized by vector)
+    """
     orientations = [(-1, 0), (0, -1), (1, 0), (0, 1)]
     possible = []
+
+    # for every possible orientation
     for vctr in orientations:
+
+        # for length of the ship
         for i in range(length):
             position = []
             position.append(coords[0]+i*vctr[0])
             position.append(coords[1]+i*vctr[1])
+
+            # if outside the field, skip to next orientation
             if position[0] > 9 or position[1] > 9:
                 break
             if position[0] < 0 or position[1] < 0:
                 break
+
+            # if current position occupied, skip to next orientation
             if not field[position[0]][position[1]]["content"] == "water":
                 break
+
+            # if length unnoccupied, add vector to possible orientations list
             if i == length-1:
                 possible.append(vctr)
     return possible
 
 
 def place_ship(field, ship):
+    """
+    Place ship in a field.
+
+    ARGUMENTS:
+    field - a field in which to place the ship
+    ship - the ship to place
+
+    RETURNS:
+    field with the ship placed
+    """
     length = ship["length"]
     coords = ship["coords"]
     orientation = ship["orientation"]
@@ -113,13 +198,28 @@ def place_ship(field, ship):
 
 
 def get_neighbors(coords):
+    """
+    Find neighbors of coord in a field
+
+    ARGUMENTS:
+    coords - in format [x, y]
+
+    RETURNS:
+    list of neighbors, where each neighbor has format [x, y]
+    """
     neighbors = []
     directions = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+
+    # for every direction
     for vector in directions:
+
+        # remove direction if out of bounds of field
         if coords[0]+vector[0] > 9 or coords[1]+vector[1] > 9:
             directions.remove(vector)
         elif coords[0]+vector[0] < 0 or coords[1]+vector[1] < 0:
             directions.remove(vector)
+
+    # for every remaining direction, get neighbor coords, append to list
     for vector in directions:
         neighbor = []
         x = coords[0] + vector[0]

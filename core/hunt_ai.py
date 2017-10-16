@@ -20,46 +20,50 @@ class Hunt_AI(player.Player):
 
     def turn(self, enemy):
         if self.mode == "hunt":
-            if len(self.hit_list) > 1:
-                coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
-            elif len(self.hit_list) == 1:
-                coords = self.hit_list[0]
-            else:
-                self.hit_list = regen_hit_list(self.enemy_field)
-                coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
-            self.enemy_field[coords[0]][coords[1]]["hit"] = True
-            ship_hit, ship_sunk, ship_length = enemy.hit(coords)
-            self.hit_list.remove(coords)
-            if ship_hit:
-                self.enemy_field[coords[0]][coords[1]]["content"] = "ship"
-                self.previous_hits[0] = coords
-                self.mode = "target"
-
+            self.hunt(enemy)
         elif self.mode == "target":
-            self.create_targets()
-            if len(self.target_list) > 1:
-                coords = self.target_list[random.randint(0, len(self.target_list)-1)]
-            elif len(self.target_list) == 0:
-                self.mode = "hunt"
-                self.target_list = []
-                self.previous_hits = [None]
-                return
-            else:
-                coords = self.target_list[0]
-            self.enemy_field[coords[0]][coords[1]]["hit"] = True
-            ship_hit, ship_sunk, ship_length = enemy.hit(coords)
-            if coords in self.hit_list:
-                self.hit_list.remove(coords)
-            if ship_hit:
-                self.enemy_field[coords[0]][coords[1]]["content"] = "ship"
-                self.previous_hits.append(coords)
-            if ship_sunk and len(self.previous_hits) == ship_length:
-                self.mode = "hunt"
-                self.target_list = []
-                self.previous_hits = [None]
-            elif ship_sunk and len(self.previous_hits) > ship_length:
-                self.cleanup_ship(ship_length)
+            self.target(enemy)
+
+    def hunt(self, enemy):
+        if len(self.hit_list) > 1:
+            coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
+        elif len(self.hit_list) == 1:
+            coords = self.hit_list[0]
+        else:
+            self.hit_list = regen_hit_list(self.enemy_field)
+            coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
+        self.enemy_field[coords[0]][coords[1]]["hit"] = True
+        ship_hit, ship_sunk, ship_length = enemy.hit(coords)
+        self.hit_list.remove(coords)
+        if ship_hit:
+            self.enemy_field[coords[0]][coords[1]]["content"] = "ship"
+            self.previous_hits[0] = coords
+            self.mode = "target"
+
+    def target(self, enemy):
+        self.create_targets()
+        if len(self.target_list) > 1:
+            coords = self.target_list[random.randint(0, len(self.target_list)-1)]
+        elif len(self.target_list) == 0:
+            self.mode = "hunt"
+            self.target_list = []
+            self.previous_hits = [None]
             return
+        else:
+            coords = self.target_list[0]
+        self.enemy_field[coords[0]][coords[1]]["hit"] = True
+        ship_hit, ship_sunk, ship_length = enemy.hit(coords)
+        if coords in self.hit_list:
+            self.hit_list.remove(coords)
+        if ship_hit:
+            self.enemy_field[coords[0]][coords[1]]["content"] = "ship"
+            self.previous_hits.append(coords)
+        if ship_sunk and len(self.previous_hits) == ship_length:
+            self.mode = "hunt"
+            self.target_list = []
+            self.previous_hits = [None]
+        elif ship_sunk and len(self.previous_hits) > ship_length:
+            self.cleanup_ship(ship_length)
 
     def create_targets(self):
         targets = []
