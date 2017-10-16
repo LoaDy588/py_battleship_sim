@@ -1,14 +1,11 @@
 - documentation
-- try to simplify/optimize algorithms in fieldgenerator
+- cleanup and comment code
 - AIs:
-  - random
-  - hunt/target
-  - hunt/target parity
   - probabilistic
-  - imperfect probabilistic(does few random ship positions)
-  - systematic(line by line, column by column)
 - Map types:
- - random
- - random human like
+ - random human like(spacing)
  - outside
  - cluster
+
+Notes:
+ - hunt/target with parity does some weird stuff if it refreshes the hit list

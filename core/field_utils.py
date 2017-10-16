@@ -2,7 +2,7 @@
 Contains utilites for creating and working with battleship game fields.
 
 field, ship, shiplist returns/arguments are always standard format.
-For standard formats, check FORMATS.md.
+For standard formats, check wiki.
 
 
 GENERATION METHODS:
@@ -42,13 +42,11 @@ def create_random():
     # create empty field and basic shiplist
     field = create_field()
     shiplist = create_shiplist()
-
     # place every ship from shiplist in the field
     for ship in shiplist:
         coords, orientations = find_empty_space(field, ship["length"])
         # pick random from possible orientations of ship
         orientation = orientations[random.randint(0, len(orientations)-1)]
-
         # write position values to the ship dictionary
         ship["coords"] = coords
         ship["orientation"] = orientation
@@ -58,22 +56,22 @@ def create_random():
 
 
 def create_outside():
-    """Return field with ships near border and it's shiplist"""
+    """Return field with ships near border and it's shiplist."""
     return "test"
 
 
 def create_cluster():
-    """Create and return field with ships in cluster and shiplist"""
+    """Create and return field with ships in cluster and shiplist."""
     return "test"
 
 
 def create_human_like():
-    """Create and return randomly filled(with gaps) field and shiplist"""
+    """Create and return randomly filled(with gaps) field and shiplist."""
     return "foobar"
 
 
 def create_shiplist():
-    """Returns shiplist."""
+    """Return shiplist."""
     shiplist = []
     shiplist.append({
         "name": "carrier",
@@ -105,7 +103,7 @@ def create_shiplist():
 
 def find_empty_space(field, length):
     """
-    Finds empty space for a ship.
+    Find empty space for a ship.
 
     ARGUMENTS:
     field - field in which to find space
@@ -119,14 +117,12 @@ def find_empty_space(field, length):
         # create random coords
         x = random.randint(0, 9)
         y = random.randint(0, 9)
-
         # if space occupied, skip cycle and start again
         if field[x][y]["content"] == "ship":
             continue
         else:
             coords = [x, y]
             orientations = find_possible_orientations(field, coords, length)
-
             # if no possible orientations, skip cycle and star again
             if len(orientations) == 0:
                 continue
@@ -148,22 +144,18 @@ def find_possible_orientations(field, coords, length):
     """
     orientations = [(-1, 0), (0, -1), (1, 0), (0, 1)]
     possible = []
-
     # for every possible orientation
     for vctr in orientations:
-
         # for length of the ship
         for i in range(length):
             position = []
             position.append(coords[0]+i*vctr[0])
             position.append(coords[1]+i*vctr[1])
-
             # if outside the field, skip to next orientation
             if position[0] > 9 or position[1] > 9:
                 break
             if position[0] < 0 or position[1] < 0:
                 break
-
             # if current position occupied, skip to next orientation
             if not field[position[0]][position[1]]["content"] == "water":
                 break
@@ -188,6 +180,7 @@ def place_ship(field, ship):
     length = ship["length"]
     coords = ship["coords"]
     orientation = ship["orientation"]
+    # for every spot occupied by ship, edit field to reflect this
     for i in range(length):
         position = []
         position.append(coords[0]+i*orientation[0])
@@ -199,7 +192,7 @@ def place_ship(field, ship):
 
 def get_neighbors(coords):
     """
-    Find neighbors of coord in a field
+    Find neighbors of coord in a field.
 
     ARGUMENTS:
     coords - in format [x, y]
@@ -212,7 +205,6 @@ def get_neighbors(coords):
 
     # for every direction
     for vector in directions:
-
         # remove direction if out of bounds of field
         if coords[0]+vector[0] > 9 or coords[1]+vector[1] > 9:
             directions.remove(vector)
@@ -228,3 +220,26 @@ def get_neighbors(coords):
         neighbor.append(y)
         neighbors.append(neighbor)
     return neighbors
+
+
+def check_ship(field, ship):
+    """
+    Check if ship has been sunk.
+
+    ARGUMENTS:
+    field - the field with ship to check
+    ship - ship to check
+
+    RETURNS:
+    True/False boolean, True if ship has been sunk.
+    """
+    x = ship["coords"][0]
+    y = ship["coords"][1]
+    orientation = ship["orientation"]
+    hit_list = []
+    for i in range(ship["length"]):
+        hit_list.append(field[x+i*orientation[0]][y+i*orientation[1]]["hit"])
+    if sum(hit_list) == ship["length"]:
+        return True
+    else:
+        return False

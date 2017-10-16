@@ -15,11 +15,10 @@ def display_field(field):
     Display field in console.
 
     ARGUMENTS:
-    field - field to display, expects standard format(check FORMATS.md)
+    field - field to display, expects standard format
     """
     os.system('cls' if os.name == 'nt' else 'clear')     # clear console
     print("/|0|1|2|3|4|5|6|7|8|9|")     # print top row
-
     # step through the field and display every point
     for y in range(10):
         print(str(y)+"|", end="")   # print begging of line/row

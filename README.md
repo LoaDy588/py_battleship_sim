@@ -3,4 +3,4 @@ Python Battleship simulator
 
 FI MUNI IB111 seminar project
 
-No license whatsoever, the code sucks anyways.
+For detailed description and documentation, check the [wiki](https://github.com/LoaDy588/py_battleship_sim/wiki)
