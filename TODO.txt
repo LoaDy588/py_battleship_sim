@@ -1,5 +1,5 @@
-- documentation
-- cleanup and comment code
+- document and comment hunt_ai
+- create documentation in wiki
 - AIs:
   - probabilistic
 - Map types:

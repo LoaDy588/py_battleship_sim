@@ -102,11 +102,17 @@ class Hunt_AI(player.Player):
 
 
 def regen_hit_list(field):
-    hit_list = []
+    ships = []
     for x in range(10):
         for y in range(10):
-            if (x + y) % 2 == 1:
-                hit_list.append([x, y])
+            if field[x][y]["content"] == "ship":
+                ships.append([x, y])
+    hit_list = []
+    for ship in ships:
+        neighbors = field_utils.get_neighbors(ship)
+        for neighbor in neighbors:
+            if neighbor not in hit_list:
+                hit_list.append(neighbor)
     for hit in hit_list:
         if field[hit[0]][hit[1]]["hit"]:
             hit_list.remove(hit)

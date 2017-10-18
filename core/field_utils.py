@@ -10,11 +10,12 @@ create_field - creates empty field
 create_random - creates field randomly filled with ships
 create_outside - creates field with ships near the borders(PLANNED)
 create_cluster - creates field with randomly placed cluster of ships(PLANNED)
-create_human_like - create field with randomly placed ships with gaps
 create_shiplist - creates shiplist
 
 UTILITY METHODS:
-find_empty_space - finds empty space in specified field
+find_empty_space_random - finds random empty space in specified field
+find empty_space_outside - finds empty space near the border in specified field
+find empty_space_cluster - finds empty space in specified cluster in specified field
 find_possible_orientations - finds possible orientation
                              for a ship of specified length and origin
 place_ship - places specified ship in the specified field
@@ -44,7 +45,7 @@ def create_random():
     shiplist = create_shiplist()
     # place every ship from shiplist in the field
     for ship in shiplist:
-        coords, orientations = find_empty_space(field, ship["length"])
+        coords, orientations = find_empty_space_random(field, ship["length"])
         # pick random from possible orientations of ship
         orientation = orientations[random.randint(0, len(orientations)-1)]
         # write position values to the ship dictionary
@@ -63,11 +64,6 @@ def create_outside():
 def create_cluster():
     """Create and return field with ships in cluster and shiplist."""
     return "test"
-
-
-def create_human_like():
-    """Create and return randomly filled(with gaps) field and shiplist."""
-    return "foobar"
 
 
 def create_shiplist():
@@ -101,9 +97,9 @@ def create_shiplist():
     return shiplist
 
 
-def find_empty_space(field, length):
+def find_empty_space_random(field, length):
     """
-    Find empty space for a ship.
+    Find random empty space for a ship.
 
     ARGUMENTS:
     field - field in which to find space
@@ -203,21 +199,17 @@ def get_neighbors(coords):
     neighbors = []
     directions = [(-1, 0), (0, -1), (1, 0), (0, 1)]
 
-    # for every direction
-    for vector in directions:
-        # remove direction if out of bounds of field
-        if coords[0]+vector[0] > 9 or coords[1]+vector[1] > 9:
-            directions.remove(vector)
-        elif coords[0]+vector[0] < 0 or coords[1]+vector[1] < 0:
-            directions.remove(vector)
-
-    # for every remaining direction, get neighbor coords, append to list
+    # for every direction, get neighbor coords, append to list
     for vector in directions:
         neighbor = []
         x = coords[0] + vector[0]
         y = coords[1] + vector[1]
         neighbor.append(x)
         neighbor.append(y)
+        if neighbor[0] > 9 or neighbor[1] > 9:
+            continue
+        if neighbor[0] < 0 or neighbor[1] < 0:
+            continue
         neighbors.append(neighbor)
     return neighbors
 
