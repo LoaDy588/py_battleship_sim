@@ -31,7 +31,7 @@ class Player:
         RETURNS(tuple):
         ship_hit - boolean, True if a part of ship was hit
         ship_sunk - boolean, True if the ship was ship_sunk
-        ship_length - int, length of sunken ship, 0 if ship_sunk False
+        ship_length - int, length of sunken ship, 0 if not ship_sunk
         """
         x = coords[0]
         y = coords[1]

@@ -2,10 +2,7 @@
 - create documentation in wiki
 - AIs:
   - probabilistic
-- Map types:
- - random human like(spacing)
- - outside
- - cluster
+  - cheater
 
 Notes:
- - hunt/target with parity does some weird stuff if it refreshes the hit list
+ - hunt_ai with parity still does weird shit

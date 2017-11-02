@@ -16,8 +16,7 @@ class Random_AI(player.Player):
     def __init__(self):
         """Initialize the AI. Doesn't require any arguments."""
         player.Player.__init__(self)  # init the Player class.
-        # create the hit_list
-        self.hit_list = []
+        self.hit_list = []  # create the hit_list
         for x in range(10):
             for y in range(10):
                 self.hit_list.append([x, y])
