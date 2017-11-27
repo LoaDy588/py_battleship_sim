@@ -16,10 +16,10 @@ class Random_AI(player.Player):
     def __init__(self):
         """Initialize the AI. Doesn't require any arguments."""
         player.Player.__init__(self)  # init the Player class.
-        self.hit_list = []  # create the hit_list
+        self.__hit_list = []  # create the hit_list
         for x in range(10):
             for y in range(10):
-                self.hit_list.append([x, y])
+                self.__hit_list.append([x, y])
 
     def turn(self, opponent):
         """
@@ -30,7 +30,7 @@ class Random_AI(player.Player):
                     or class inheriting hit method from Player class
         """
         # pick random coord from hit_list and remove it from hit_list
-        coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
-        self.hit_list.remove(coords)
+        coords = self.__hit_list[random.randint(0, len(self.__hit_list)-1)]
+        self.__hit_list.remove(coords)
         # hit opponent at picked coord.
         opponent.hit(coords)

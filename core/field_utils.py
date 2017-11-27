@@ -8,8 +8,6 @@ For standard formats, check wiki.
 GENERATION METHODS:
 create_field - creates empty field
 create_random - creates field randomly filled with ships
-create_outside - creates field with ships near the borders(PLANNED)
-create_cluster - creates field with randomly placed cluster of ships(PLANNED)
 create_shiplist - creates shiplist
 
 UTILITY METHODS:
@@ -54,16 +52,6 @@ def create_random():
 
         field = place_ship(field, ship)
     return field, shiplist
-
-
-def create_outside():
-    """Return field with ships near border and it's shiplist."""
-    return "test"
-
-
-def create_cluster():
-    """Create and return field with ships in cluster and shiplist."""
-    return "test"
 
 
 def create_shiplist():

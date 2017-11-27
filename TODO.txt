@@ -1,4 +1,4 @@
-- document and comment hunt_ai
+- create examples for usage
 - create documentation in wiki
 - AIs:
   - probabilistic

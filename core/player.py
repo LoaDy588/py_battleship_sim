@@ -19,7 +19,7 @@ class Player:
     def __init__(self):
         """Initialize the instance, doesn't require arguments."""
         # create field and shiplist
-        self.field, self.shiplist = field_utils.create_random()
+        self.__field, self.__shiplist = field_utils.create_random()
 
     def hit(self, coords):
         """
@@ -36,15 +36,16 @@ class Player:
         x = coords[0]
         y = coords[1]
         # reflect hit in field
-        self.field[x][y]["hit"] = True
+        self.__field[x][y]["hit"] = True
         # check ship status
-        if self.field[x][y]["content"] == "ship":
-            ship_id = self.field[x][y]["shipID"]
-            ship_sunk = field_utils.check_ship(self.field, self.shiplist[ship_id])
+        if self.__field[x][y]["content"] == "ship":
+            ship_id = self.__field[x][y]["shipID"]
+            ship_sunk = field_utils.check_ship(self.__field,
+                                               self.__shiplist[ship_id])
             # default length to zero unless ship sunken
             length = 0
             if ship_sunk:
-                length = self.shiplist[ship_id]["length"]
+                length = self.__shiplist[ship_id]["length"]
             return True, ship_sunk, length
         else:
             return False, False, 0
@@ -53,8 +54,8 @@ class Player:
         """Check if player has lost(all ships sunk), return boolean."""
         ship_status = []
         # check if sunk for every ship
-        for ship in self.shiplist:
-            ship_status.append(field_utils.check_ship(self.field, ship))
+        for ship in self.__shiplist:
+            ship_status.append(field_utils.check_ship(self.__field, ship))
         # if all ships sunk
         if sum(ship_status) == 5:
             return True
@@ -63,8 +64,8 @@ class Player:
 
     def get_field(self):
         """Return field of the instance."""
-        return self.field
+        return self.__field
 
     def get_shiplist(self):
         """Return shiplist of the instance."""
-        return self.shiplist
+        return self.__shiplist

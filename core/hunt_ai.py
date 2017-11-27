@@ -15,10 +15,10 @@ class Hunt_AI(player.Player):
 
     METHODS:
     turn - plays a one turn against oponnent
-    hunt - plays one hunt turn againt oponnent
-    target - plays one target turn against oponnent
-    create_targets
-    cleanup_ship
+    __hunt - plays one hunt turn againt oponnent
+    __target - plays one target turn against oponnent
+    __create_targets
+    __cleanup_ship
     """
     def __init__(self, parity=True):
         """
@@ -30,19 +30,19 @@ class Hunt_AI(player.Player):
         player.Player.__init__(self)  # init Player class
 
         # create variables to store the state of the AI
-        self.enemy_field = field_utils.create_field()
-        self.hit_list = []
-        self.mode = "hunt"
-        self.previous_hits = [None]
-        self.target_list = []
+        self.__enemy_field = field_utils.create_field()
+        self.__hit_list = []
+        self.__mode = "hunt"
+        self.__previous_hits = [None]
+        self.__target_list = []
 
         # create hit_list
         for x in range(10):
             for y in range(10):
                 if (x + y) % 2 == 0 and parity:
-                    self.hit_list.append([x, y])
+                    self.__hit_list.append([x, y])
                 elif not parity:
-                    self.hit_list.append([x, y])
+                    self.__hit_list.append([x, y])
 
     def turn(self, enemy):
         """
@@ -52,48 +52,48 @@ class Hunt_AI(player.Player):
         enemy - enemy object to play against, expects Player class or
                 class inheriting from it.
         """
-        if self.mode == "hunt":
-            self.hunt(enemy)
-        elif self.mode == "target":
-            self.target(enemy)
+        if self.__mode == "hunt":
+            self.__hunt(enemy)
+        elif self.__mode == "target":
+            self.__target(enemy)
 
-    def hunt(self, enemy):
+    def __hunt(self, enemy):
         """
         Play one hunt turn against opponent.
 
-        Please don't use unless you 100 percent sure you need to.
+        Private method.
 
         ARGUMENTS:
         enemy - enemy object to play against, expects Player class or
                 class inheriting from it.
         """
         # pick a random spot from hit_list, if has 1 element, pick that one.
-        if len(self.hit_list) > 1:
-            coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
-        elif len(self.hit_list) == 1:
-            coords = self.hit_list[0]
+        if len(self.__hit_list) > 1:
+            coords = self.__hit_list[random.randint(0, len(self.__hit_list)-1)]
+        elif len(self.__hit_list) == 1:
+            coords = self.__hit_list[0]
         else:  # if hit_list empty, generate new one, pick random one from it.
-            self.hit_list = regen_hit_list(self.enemy_field)
-            coords = self.hit_list[random.randint(0, len(self.hit_list)-1)]
+            self.__hit_list = regen_hit_list(self.__enemy_field)
+            coords = self.__hit_list[random.randint(0, len(self.__hit_list)-1)]
 
         # indicate that spot has been hit in enemy_field
-        self.enemy_field[coords[0]][coords[1]]["hit"] = True
+        self.__enemy_field[coords[0]][coords[1]]["hit"] = True
 
         # hit an enemy and get status
         ship_hit, ship_sunk, ship_length = enemy.hit(coords)
-        self.hit_list.remove(coords)  # remove hit from hit_list
+        self.__hit_list.remove(coords)  # remove hit from hit_list
 
         # if hit is successful, change to target mode
         if ship_hit:
-            self.enemy_field[coords[0]][coords[1]]["content"] = "ship"
-            self.previous_hits[0] = coords
-            self.mode = "target"
+            self.__enemy_field[coords[0]][coords[1]]["content"] = "ship"
+            self.__previous_hits[0] = coords
+            self.__mode = "target"
 
-    def target(self, enemy):
+    def __target(self, enemy):
         """
         Play one target turn against opponent.
 
-        Please don't use unless you 100 percent sure you need to.
+        Private method.
 
         ARGUMENTS:
         enemy - enemy object to play against, expects Player class or
@@ -101,53 +101,53 @@ class Hunt_AI(player.Player):
         """
 
         # create possible targets and pick one(or the only one)
-        self.create_targets()
-        if len(self.target_list) > 1:
-            coords = self.target_list[random.randint(0, len(self.target_list)-1)]
+        self.__create_targets()
+        if len(self.__target_list) > 1:
+            coords = self.__target_list[random.randint(0, len(self.__target_list)-1)]
 
         # if no possible targets, switch to hunt mode
-        elif len(self.target_list) == 0:
-            self.mode = "hunt"
-            self.target_list = []
-            self.previous_hits = [None]
+        elif len(self.__target_list) == 0:
+            self.__mode = "hunt"
+            self.__target_list = []
+            self.__previous_hits = [None]
             return
         else:
-            coords = self.target_list[0]
+            coords = self.__target_list[0]
 
         # reflect hit in enemy_field
-        self.enemy_field[coords[0]][coords[1]]["hit"] = True
+        self.__enemy_field[coords[0]][coords[1]]["hit"] = True
 
         # hit enemy and get status
         ship_hit, ship_sunk, ship_length = enemy.hit(coords)
 
         # if target coord was also in hit_list, remove it
-        if coords in self.hit_list:
-            self.hit_list.remove(coords)
+        if coords in self.__hit_list:
+            self.__hit_list.remove(coords)
 
         # if ship hit, add to previous_hits
         if ship_hit:
-            self.enemy_field[coords[0]][coords[1]]["content"] = "ship"
-            self.previous_hits.append(coords)
+            self.__enemy_field[coords[0]][coords[1]]["content"] = "ship"
+            self.__previous_hits.append(coords)
 
         # if ship_sunk and only hits were ship, switch to hunt mode
-        if ship_sunk and len(self.previous_hits) == ship_length:
-            self.mode = "hunt"
-            self.target_list = []
-            self.previous_hits = [None]
+        if ship_sunk and len(self.__previous_hits) == ship_length:
+            self.__mode = "hunt"
+            self.__target_list = []
+            self.__previous_hits = [None]
         # if ship_sunk and more hits than ship, cleanup ship from previous_hits
         # and continue hunting
-        elif ship_sunk and len(self.previous_hits) > ship_length:
-            self.cleanup_ship(ship_length)
+        elif ship_sunk and len(self.__previous_hits) > ship_length:
+            self.__cleanup_ship(ship_length)
 
-    def create_targets(self):
+    def __create_targets(self):
         """
         Create possible targets based on previous hits.
 
-        Please don't use unless you 100 percent sure you need to.
+        Private method.
         """
         # create neighbors for all previous hits
         targets = []
-        for hit in self.previous_hits:
+        for hit in self.__previous_hits:
             neighbors = field_utils.get_neighbors(hit)
             for neighbor in neighbors:
                 targets.append(neighbor)
@@ -160,46 +160,48 @@ class Hunt_AI(player.Player):
 
         # remove previous hits
         for target in targets_clean1:
-            if target in self.previous_hits:
+            if target in self.__previous_hits:
                 targets_clean1.remove(target)
 
         # remove already hit spots
         targets_clean2 = []
         for target in targets_clean1:
-            if not self.enemy_field[target[0]][target[1]]["hit"]:
+            if not self.__enemy_field[target[0]][target[1]]["hit"]:
                 targets_clean2.append(target)
 
         # write to target_list var
-        self.target_list = targets_clean2
+        self.__target_list = targets_clean2
 
-    def cleanup_ship(self, length):
+    def __cleanup_ship(self, length):
         """
         Remove ship from previous_hits.
 
-        Please don't use unless you 100 percent sure you need to.
+        Private method.
         """
         # get last hit and find direction of ship
-        last = self.previous_hits[-1]
+        last = self.__previous_hits[-1]
         direction = (0, 0)
-        if [last[0]-length+1, last[1]] in self.previous_hits:
+        if [last[0]-length+1, last[1]] in self.__previous_hits:
             direction = (-1, 0)
-        elif [last[0]+length-1, last[1]] in self.previous_hits:
+        elif [last[0]+length-1, last[1]] in self.__previous_hits:
             direction = (1, 0)
-        elif [last[0], last[1]-length+1] in self.previous_hits:
+        elif [last[0], last[1]-length+1] in self.__previous_hits:
             direction = (0, -1)
-        elif [last[0], last[1]+length-1] in self.previous_hits:
+        elif [last[0], last[1]+length-1] in self.__previous_hits:
             direction = (0, 1)
 
         # remove ship coords from previous hits
         for i in range(length):
             removal = [last[0]+i*direction[0], last[1]+i*direction[1]]
-            if removal in self.previous_hits:
-                self.previous_hits.remove(removal)
+            if removal in self.__previous_hits:
+                self.__previous_hits.remove(removal)
 
 
 def regen_hit_list(field):
     """
     Generate new hit_list based on field provided.
+
+    New targets are neighbors of ships in field.
 
     ARGUMENTS:
     field - field to generate hit_list from
