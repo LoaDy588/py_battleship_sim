@@ -15,10 +15,10 @@ class Hunt_AI(player.Player):
 
     METHODS:
     turn - plays a one turn against oponnent
-    __hunt - plays one hunt turn againt oponnent
-    __target - plays one target turn against oponnent
-    __create_targets
-    __cleanup_ship
+    __hunt - plays one hunt turn againt oponnent, private
+    __target - plays one target turn against oponnent, private
+    __create_targets - private method
+    __cleanup_ship - private method
     """
     def __init__(self, parity=True):
         """

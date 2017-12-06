@@ -31,7 +31,9 @@ def create_field():
         line = []
         for x in range(10):
             # add dictionary with default values
-            line.append({"content": "water", "hit": False, "shipID": None})
+            line.append({"content": "water",
+                         "hit": False,
+                         "shipID": None})
         field.append(line)
     return field
 
