@@ -85,9 +85,9 @@ class Probabilistic_AI(player.Player):
         for x in range(10):
             for y in range(10):
                 pointer = self.__enemy_field[x][y]
-                if pointer[x][y]["content"] == "water" and not pointer[x][y]["hit"]:
+                if pointer["content"] == "water" and not pointer["hit"]:
                     possible.append((x, y))
-                elif pointer[x][y]["content"] == "ship" and not pointer[x][y]["sunk"]:
+                elif pointer["content"] == "ship" and not pointer["sunk"]:
                     possible.append((x, y))
         return possible
 
