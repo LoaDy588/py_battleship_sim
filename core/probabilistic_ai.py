@@ -15,11 +15,11 @@ class Probabilistic_AI(player.Player):
 
     def turn(self, oponnent):
         coords = self.__generate_target()
+        self.__enemy_field[coords[0]][coords[1]]["hit"] = True
         ship_hit, ship_sunk, length = oponnent.hit(coords)
-        if ship_hit and not ship_sunk:
-            self.__enemy_field[coords[0]][coords[1]]["hit"] = True
-        elif ship_hit and ship_sunk:
-            self.__enemy_field[coords[0]][coords[1]]["hit"] = True
+        if ship_hit:
+            self.__enemy_field[coords[0]][coords[1]]["content"] = "ship"
+        if ship_sunk:
             self.__enemy_field = sink_ship(self.__enemy_field, coords, length)
             for ship in self.__enemy_shiplist:
                 if ship["length"] == length:
@@ -34,14 +34,14 @@ class Probabilistic_AI(player.Player):
 
     def __create_probab_field(self):
         possible_points = generate_possible_points(self.__enemy_field)
-        probab_field = [[0 for x in range(10)] for x in range(10)]
+        probab_field = [[0 for y in range(10)] for x in range(10)]
         for ship in self.__enemy_shiplist:
             for point in possible_points:
                 orientations, bonus = find_orientations(self.__enemy_field,
                                                         point, ship["length"])
                 for index, orientation in enumerate(orientations):
-                    add_to_field(probab_field, orientation, bonus[index],
-                                 point, ship["length"])
+                    add_to_field(self.__enemy_field, probab_field, orientation,
+                                 bonus[index], point, ship["length"])
         return probab_field
 
 
@@ -50,7 +50,7 @@ def find_highest(probab_field):
     current_value = 0
     for x in range(10):
         for y in range(10):
-            if probab_field[x][y] > current_value
+            if probab_field[x][y] > current_value:
                 current = [x, y]
                 current_value = probab_field[x][y]
     return tuple(current)
@@ -81,13 +81,14 @@ def find_orientations(field, coords, length):
     return tuple(possible), tuple(possible_bonus)
 
 
-def add_to_field(probab_field, direction, bonus, point, length):
+def add_to_field(field, probab_field, direction, bonus, point, length):
     for i in range(length):
         pointer = (point[0]+i*direction[0], point[1]+i*direction[1])
-        if bonus:
-            probab_field[pointer[0]][pointer[1]] += 10
-        else:
-            probab_field[pointer[0]][pointer[1]] += 1
+        if not field[pointer[0]][pointer[1]]["hit"]:
+            if bonus:
+                probab_field[pointer[0]][pointer[1]] += 10
+            else:
+                probab_field[pointer[0]][pointer[1]] += 1
 
 
 def generate_possible_points(field):
