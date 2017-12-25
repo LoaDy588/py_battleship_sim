@@ -1,8 +1,8 @@
 - create examples for usage
 - create documentation in wiki
 - AIs:
-  - probabilistic
-  - cheater
+  - cheater(knows some location of n ships)
 
 Notes:
- - hunt_ai with parity still does weird shit
+ - hunt_ai with parity still does weird shit(around 0.05% of all runs)
+ - probabilistic_ai sometimes cycles itself(around 0.5% of all runs)
