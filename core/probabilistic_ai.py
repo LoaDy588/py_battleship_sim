@@ -21,7 +21,7 @@ class Probabilistic_AI(player.Player):
         if ship_hit:
             self.__enemy_field[coords[0]][coords[1]]["content"] = "ship"
         if ship_sunk:
-            self.__sink_ship(self.__enemy_field, coords, length)
+            self.__sink_ship(coords, length)
             for ship in self.__enemy_shiplist:
                 if ship["length"] == length:
                     self.__enemy_shiplist.remove(ship)
@@ -36,17 +36,14 @@ class Probabilistic_AI(player.Player):
             return target[random.randint(0, len(target)-1)]
 
     def __create_probab_field(self):
-        possible_points = self.__generate_possible_points(self.__enemy_field)
+        possible_points = self.__generate_possible_points()
         probab_field = [[0 for y in range(10)] for x in range(10)]
         for ship in self.__enemy_shiplist:
             for point in possible_points:
-                orientations, bonus = self.__find_orientations(
-                                                        self.__enemy_field,
-                                                        point, ship["length"])
+                orientations, bonus = self.__find_orientations(point, ship["length"])
                 for index, orientation in enumerate(orientations):
-                    self.__add_to_field(self.__enemy_field, probab_field,
-                                        orientation, bonus[index], point,
-                                        ship["length"])
+                    self.__add_to_field(probab_field, orientation, bonus[index],
+                                       point, ship["length"])
         return probab_field
 
     def __find_orientations(self, coords, length):
