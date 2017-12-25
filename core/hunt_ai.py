@@ -1,7 +1,7 @@
 """Contains Hunt/Target AI with two modes."""
 from . import player
-import random
 from . import field_utils
+import random
 
 
 class Hunt_AI(player.Player):

@@ -132,16 +132,16 @@ def find_possible_orientations(field, coords, length):
     possible = []
     # for every possible orientation
     for vctr in orientations:
+        # if outside the field, skip to next orientation
+        if coords[0]+length*vctr[0] > 9 or coords[1]+length*vctr[1] > 9:
+            continue
+        if coords[0]+length*vctr[0] < 0 or coords[1]+length*vctr[1] < 0:
+            continue
         # for length of the ship
         for i in range(length):
             position = []
             position.append(coords[0]+i*vctr[0])
             position.append(coords[1]+i*vctr[1])
-            # if outside the field, skip to next orientation
-            if position[0] > 9 or position[1] > 9:
-                break
-            if position[0] < 0 or position[1] < 0:
-                break
             # if current position occupied, skip to next orientation
             if not field[position[0]][position[1]]["content"] == "water":
                 break
