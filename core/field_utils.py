@@ -133,9 +133,9 @@ def find_possible_orientations(field, coords, length):
     # for every possible orientation
     for vctr in orientations:
         # if outside the field, skip to next orientation
-        if coords[0]+length*vctr[0] > 9 or coords[1]+length*vctr[1] > 9:
+        if coords[0]+(length-1)*vctr[0] > 9 or coords[1]+(length-1)*vctr[1] > 9:
             continue
-        if coords[0]+length*vctr[0] < 0 or coords[1]+length*vctr[1] < 0:
+        if coords[0]+(length-1)*vctr[0] < 0 or coords[1]+(length-1)*vctr[1] < 0:
             continue
         # for length of the ship
         for i in range(length):
