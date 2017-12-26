@@ -11,7 +11,8 @@ class Hunt_AI(player.Player):
     Inherits from Player class.
 
     Hunts for a ship and then targets it.
-    Has two modes for hunting - parity and non-parity
+    Has two modes for hunting - parity and non-parity.
+    Can cheat.
 
     METHODS:
     turn - plays a one turn against oponnent

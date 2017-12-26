@@ -1,7 +1,5 @@
 - create final simulation scripts
 - create documentation in wiki
-- AIs:
-  - cheating Hunt_AI, Probabilistic_AI (knows some location of n ships)
 
 Notes:
  - hunt_ai with parity still does weird shit(around 0.05% of all runs)

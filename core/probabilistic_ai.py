@@ -12,6 +12,7 @@ class Probabilistic_AI(player.Player):
 
     Calculates probability field of all currently possible ship orientations,
     then picking the spot with highest probability.
+    Can cheat.
 
     METHODS:
     turn - plays a one turn against oponnent

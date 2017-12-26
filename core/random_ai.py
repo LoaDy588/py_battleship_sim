@@ -1,6 +1,6 @@
 """Contains basic, randomly firing AI."""
 from . import player
-
+import random
 
 
 class Random_AI(player.Player):

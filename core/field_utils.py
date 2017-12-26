@@ -269,13 +269,19 @@ def generate_cheat_list(field, n):
     """
     cheat_list = []
     ship_dict = {}
+
+    # step through whole field
     for x in range(10):
         for y in range(10):
+
+            # if spot is ship, add point to ship_dict
             if field[x][y]["content"] == "ship":
                 if field[x][y]["shipID"] in ship_dict.keys():
                     ship_dict[field[x][y]["shipID"]].append((x, y))
                 else:
                     ship_dict[field[x][y]["shipID"]] = [(x, y)]
+
+    # pick random coord from every ship_dict item
     for i in range(n):
         temp = ship_dict.pop(random.choice(list(ship_dict.keys())))
         if len(temp) == 1:
