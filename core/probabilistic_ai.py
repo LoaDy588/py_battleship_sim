@@ -25,18 +25,30 @@ class Probabilistic_AI(player.Player):
     __sink_ship - "sinks" specified ship in __enemy_field
     """
 
-    def __init__(self):
-        """Initialize the AI."""
+    def __init__(self, cheat=False, cheat_input=[]):
+        """
+        Initialize the AI.
+
+        ARGUMENTS:
+        cheat - if the AI should cheat, default False
+        cheat_input - list of cheated points
+        """
         player.Player.__init__(self)  # init Player class
 
         # create variables for storing oponnent state
         self.__enemy_field = field_utils.create_field()
         self.__enemy_shiplist = field_utils.create_shiplist()
+        self.__cheat = cheat
 
         # add a "sunk" key with default False for every point in __enemy_field
         for x in range(10):
             for y in range(10):
                 self.__enemy_field[x][y]["sunk"] = False
+
+        # if cheating, update the __enemy_field with values
+        if self.__cheat and not len(cheat_input) == 0:
+            for coord in cheat_input:
+                self.__enemy_field[coord[0]][coord[1]]["content"] = "ship"
 
     def turn(self, oponnent, debug=False):
         """
@@ -79,7 +91,7 @@ class Probabilistic_AI(player.Player):
         probability = self.__create_probab_field()
         if debug:  # debug
             display_probability(probability)
-        target = find_highest(probability)
+        target = field_utils.find_highest(probability)
 
         # pick random item from list of possible spots
         if len(target) == 1:
@@ -150,6 +162,9 @@ class Probabilistic_AI(player.Player):
                 pointer = self.__enemy_field[coords[0]+i*vctr[0]][coords[1]+i*vctr[1]]
                 if not pointer["hit"]:
                     temp.append(True)
+                    if self.__cheat:
+                        if pointer["content"] == "ship":
+                            bonus = True
                 elif pointer["hit"]:
                     if pointer["content"] == "ship" and not pointer["sunk"]:
                         temp.append(True)
@@ -254,37 +269,8 @@ class Probabilistic_AI(player.Player):
             self.__enemy_field[removal[0]][removal[1]]["sunk"] = True
 
 
-def find_highest(probab_field):
-    """
-    Find the points with highest value in probabilty field.
-
-    Returns list with 1 or more tuples of coordinates.
-
-    ARGUMENTS:
-    probab_field - probability field, expects 10x10 field
-    """
-
-    # default to (0. 0) and 0 value
-    current = [(0, 0)]
-    current_value = 0
-
-    # step through the whole field
-    for x in range(10):
-        for y in range(10):
-
-            # if higher value, rewrite list to contain this point, update value
-            if probab_field[x][y] > current_value:
-                current = [(x, y)]
-                current_value = probab_field[x][y]
-
-            # if same value, append this point to list
-            elif probab_field[x][y] == current_value:
-                current.append((x, y))
-
-    return current
-
-
 def display_probability(field):
+    """Debug function"""
     for y in range(10):
         for x in range(10):
             print(field[x][y], " ", end="")

@@ -20,12 +20,14 @@ class Hunt_AI(player.Player):
     __create_targets - private method
     __cleanup_ship - private method
     """
-    def __init__(self, parity=True):
+    def __init__(self, parity=True, cheat=False, cheat_input=[]):
         """
         Initialize the AI.
 
         ARGUMENTS:
         parity - if the AI should use parity in hunt mode, default True
+        cheat - if the AI should cheat, default False
+        cheat_input - list of cheated points
         """
         player.Player.__init__(self)  # init Player class
 
@@ -33,8 +35,10 @@ class Hunt_AI(player.Player):
         self.__enemy_field = field_utils.create_field()
         self.__hit_list = []
         self.__mode = "hunt"
+        self.__cheat = cheat
         self.__previous_hits = [None]
         self.__target_list = []
+        self.__cheat_list = cheat_input
 
         # create hit_list
         for x in range(10):
@@ -67,21 +71,31 @@ class Hunt_AI(player.Player):
         enemy - enemy object to play against, expects Player class or
                 class inheriting from it.
         """
-        # pick a random spot from hit_list, if has 1 element, pick that one.
-        if len(self.__hit_list) > 1:
-            coords = self.__hit_list[random.randint(0, len(self.__hit_list)-1)]
-        elif len(self.__hit_list) == 1:
-            coords = self.__hit_list[0]
-        else:  # if hit_list empty, generate new one, pick random one from it.
-            self.__hit_list = regen_hit_list(self.__enemy_field)
-            coords = self.__hit_list[random.randint(0, len(self.__hit_list)-1)]
+        # if cheating, pick a spot from cheat_list, unless list empty
+        if self.__cheat and not len(self.__cheat_list) == 0:
+            if len(self.__hit_list) == 1:
+                coords = self.__cheat_list[0]
+            else:
+                coords = self.__cheat_list[random.randint(0, len(self.__cheat_list)-1)]
+            self.__cheat_list.remove(coords)  # remove from cheat_list
+
+        else:
+            # pick a random spot from hit_list, if has 1 element, pick that one.
+            if len(self.__hit_list) > 1:
+                coords = self.__hit_list[random.randint(0, len(self.__hit_list)-1)]
+            elif len(self.__hit_list) == 1:
+                coords = self.__hit_list[0]
+            else:  # if hit_list empty, generate new one, pick random one from it.
+                self.__hit_list = regen_hit_list(self.__enemy_field)
+                coords = self.__hit_list[random.randint(0, len(self.__hit_list)-1)]
 
         # indicate that spot has been hit in enemy_field
         self.__enemy_field[coords[0]][coords[1]]["hit"] = True
 
         # hit an enemy and get status
         ship_hit, ship_sunk, ship_length = enemy.hit(coords)
-        self.__hit_list.remove(coords)  # remove hit from hit_list
+        if coords in self.__hit_list:
+            self.__hit_list.remove(coords)  # remove hit from hit_list
 
         # if hit is successful, change to target mode
         if ship_hit:

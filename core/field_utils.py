@@ -9,13 +9,13 @@ GENERATION METHODS:
 create_field - creates empty field
 create_random - creates field randomly filled with ships
 create_shiplist - creates shiplist
+generate_cheat_list - generates cheat list
 
 UTILITY METHODS:
 find_empty_space_random - finds random empty space in specified field
-find empty_space_outside - finds empty space near the border in specified field
-find empty_space_cluster - finds empty space in specified cluster in specified field
 find_possible_orientations - finds possible orientation
                              for a ship of specified length and origin
+find_highest - finds points with highest values in probability field
 place_ship - places specified ship in the specified field
 get_neighbors - returns list of neighbors of specified fied coord
 
@@ -225,3 +225,61 @@ def check_ship(field, ship):
         return True
     else:
         return False
+
+
+def find_highest(probab_field):
+    """
+    Find the points with highest value in probabilty field.
+
+    Returns list with 1 or more tuples of coordinates.
+
+    ARGUMENTS:
+    probab_field - probability field, expects 10x10 array of int values
+    """
+    # default to (0. 0) and 0 value
+    current = [(0, 0)]
+    current_value = 0
+
+    # step through the whole field
+    for x in range(10):
+        for y in range(10):
+
+            # if higher value, rewrite list to contain this point, update value
+            if probab_field[x][y] > current_value:
+                current = [(x, y)]
+                current_value = probab_field[x][y]
+
+            # if same value, append this point to list
+            elif probab_field[x][y] == current_value:
+                current.append((x, y))
+
+    return current
+
+
+def generate_cheat_list(field, n):
+    """
+    Create cheat list.
+
+    Returns list with specified number of tuples of coordinates, which
+    contain ship based on specified field.
+
+    ARGUMENTS:
+    field - field from which to create cheat_list
+    n - number of points to return, min 1, max - number of ships in field
+    """
+    cheat_list = []
+    ship_dict = {}
+    for x in range(10):
+        for y in range(10):
+            if field[x][y]["content"] == "ship":
+                if field[x][y]["shipID"] in ship_dict.keys():
+                    ship_dict[field[x][y]["shipID"]].append((x, y))
+                else:
+                    ship_dict[field[x][y]["shipID"]] = [(x, y)]
+    for i in range(n):
+        temp = ship_dict.pop(random.choice(list(ship_dict.keys())))
+        if len(temp) == 1:
+            cheat_list.append(temp[0])
+        else:
+            cheat_list.append(temp[random.randint(0, len(temp)-1)])
+    return cheat_list
