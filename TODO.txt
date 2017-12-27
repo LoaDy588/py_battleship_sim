@@ -1,6 +1,0 @@
-- create final simulation scripts
-- create documentation in wiki
-
-Notes:
- - hunt_ai with parity still does weird shit(around 0.05% of all runs)
- - probabilistic_ai fix for cycling is not optimal, but works  ¯\_(ツ)_/¯
