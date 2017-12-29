@@ -71,13 +71,28 @@ def create_graph(title, sources, output):
 def main():
     graph1 = ("results/h-False-False-0.txt", "results/h-True-False-0.txt",
               "results/p-False-0.txt", "results/r.txt")
-    create_graph("AI Game length distribution", graph1, "graphs/non_cheating.png")
+    create_graph("AI game length distribution", graph1, "graphs/non_cheating.png")
 
     graph2 = ("results/h-True-True-2.txt", "results/h-True-True-5.txt",
               "results/p-False-0.txt", "results/h-True-False-0.txt",
               "results/p-True-2.txt", "results/p-True-5.txt")
-    create_graph("Cheating AI Game length distribution", graph2,
+    create_graph("Cheating AI game length distribution", graph2,
                  "graphs/cheating.png")
+
+    graph3 = ["results/h-False-True-"+str(x)+".txt" for x in range(1, 6)]
+    graph3.append("results/h-False-False-0.txt")
+    create_graph("Hunt/Target(no parity) AI game length distribution",
+                 graph3, "graphs/h-noparity.png")
+
+    graph4 = ["results/h-True-True-"+str(x)+".txt" for x in range(1, 6)]
+    graph4.append("results/h-True-False-0.txt")
+    create_graph("Hunt/Target(parity) AI game length distribution",
+                 graph4, "graphs/h-parity.png")
+
+    graph4 = ("results/p-False-0.txt", "results/p-True-2.txt",
+              "results/p-True-5.txt")
+    create_graph("Probability AI game length distribution", graph4,
+                 "graphs/probabilistic.png")
 
 if __name__ == "__main__":
     main()
